@@ -17,6 +17,8 @@ public class VentanaJuego extends JFrame {
 	MundoJuego miMundo;        // Mundo del juego
 	CocheJuego miCoche;        // Coche del juego
 	MiRunnable miHilo = null;  // Hilo del bucle principal de juego	
+	private boolean[] array = new boolean[4]; 
+	
 
 	/** Constructor de la ventana de juego. Crea y devuelve la ventana inicializada
 	 * sin coches dentro
@@ -44,6 +46,7 @@ public class VentanaJuego extends JFrame {
 		// Formato de ventana
 		setSize( 1000, 750 );
 		setResizable( false );
+		
 		// Escuchadores de botones
 		bAcelerar.addActionListener( new ActionListener() {
 			@Override
@@ -73,30 +76,57 @@ public class VentanaJuego extends JFrame {
 				// System.out.println( "Nueva dirección de coche: " + miCoche.getDireccionActual() );
 			}
 		});
-		
+
 		// Añadido para que también se gestione por teclado con el KeyListener
 		pPrincipal.addKeyListener( new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyCode()) {
-					case KeyEvent.VK_UP: {
-						miCoche.acelera( +5, 1 );
-						break;
-					}
-					case KeyEvent.VK_DOWN: {
-						miCoche.acelera( -5, 1 );
-						break;
-					}
-					case KeyEvent.VK_LEFT: {
-						miCoche.gira( +10 );
-						break;
-					}
-					case KeyEvent.VK_RIGHT: {
-						miCoche.gira( -10 );
-						break;
-					}
+				case KeyEvent.VK_UP: {
+					array[0] = true;
+//					miCoche.acelera( +5, 1 );
+//					MundoJuego.aplicarFuerza(miCoche.fuerzaAceleracionAdelante(), miCoche);
+					break;
+				}
+				case KeyEvent.VK_DOWN: {
+					array[1] = true;
+//					miCoche.acelera( -5, 1 );
+//					MundoJuego.aplicarFuerza(miCoche.fuerzaAceleracionAtras(), miCoche);
+					break;
+				}
+				case KeyEvent.VK_LEFT: {
+					array[2] = true;
+//					miCoche.gira( +10 );
+					break;
+				}
+				case KeyEvent.VK_RIGHT: {
+					array[3] = true;
+//					miCoche.gira( -10 );
+					break;
 				}
 			}
+		}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP: {
+					array[0] = false;
+					break;
+				}
+				case KeyEvent.VK_DOWN: {
+					array[1] = false;
+					break;
+				}
+				case KeyEvent.VK_LEFT: {
+					array[2] = false;
+					break;
+				}
+				case KeyEvent.VK_RIGHT: {
+					array[3] = false;
+					break;
+				}
+			}
+		}
 		});
 		pPrincipal.setFocusable(true);
 		pPrincipal.requestFocus();
@@ -114,7 +144,7 @@ public class VentanaJuego extends JFrame {
 			}
 		});
 	}
-	
+
 	/** Programa principal de la ventana de juego
 	 * @param args
 	 */
@@ -140,7 +170,7 @@ public class VentanaJuego extends JFrame {
 			System.exit(1);  // Error anormal
 		}
 	}
-	
+
 	/** Clase interna para implementación de bucle principal del juego como un hilo
 	 * @author Andoni Eguíluz
 	 * Facultad de Ingeniería - Universidad de Deusto (2014)
@@ -159,6 +189,18 @@ public class VentanaJuego extends JFrame {
 					miMundo.rebotaHorizontal(miCoche);
 				if (miMundo.hayChoqueVertical(miCoche)) // Espejo vertical si choca en Y
 					miMundo.rebotaVertical(miCoche);
+				// Comprueba mediante el array de booleanos que teclas son pulsadas, y según que tecla es pulsada el coche acelera, frena o gira sin ese retardo que ocurría antes cuando el gestor de eventos del teclado controlaba el movimiento del coche
+				if (array[0] == true) 
+					miCoche.acelera( +5, 1 );
+					MundoJuego.aplicarFuerza(miCoche.fuerzaAceleracionAdelante(), miCoche);
+				if (array[1] == true) 
+					miCoche.acelera( -5, 1 );
+					MundoJuego.aplicarFuerza(miCoche.fuerzaAceleracionAtras(), miCoche);
+				if (array[2] == true) 
+					miCoche.gira( +10 );
+				if(array[3] == true) 
+					miCoche.gira( -10 );
+				
 				// Dormir el hilo 40 milisegundos
 				try {
 					Thread.sleep( 40 );
@@ -172,5 +214,5 @@ public class VentanaJuego extends JFrame {
 			sigo = false;
 		}
 	};
-	
+
 }
