@@ -1,5 +1,7 @@
 package ud.prog3.pr02;
 
+import java.util.ArrayList;
+
 import javax.swing.JPanel;
 
 /** "Mundo" del juego del coche.
@@ -11,6 +13,10 @@ import javax.swing.JPanel;
 public class MundoJuego {
 	private JPanel panel;  // panel visual del juego
 	CocheJuego miCoche;    // Coche del juego
+	private ArrayList<JLabelEstrella> estrellas = new ArrayList<JLabelEstrella>();
+	private int i = 1;
+	private int j = 0;
+	private int estrellasQuitadas = 0;
 	
 	/** Construye un mundo de juego
 	 * @param panel	Panel visual del juego
@@ -133,4 +139,55 @@ public class MundoJuego {
 			coche.acelera( aceleracion, 0.04 );
 		}	
 	}
+	
+	/** Si han pasado más de 1,2 segundos desde la última,
+	 * crea una estrella nueva en una posición aleatoria y la añade al mundo y al panel visual */
+	public void crearEstrella() {
+			Thread creaEstrella = new Thread() {
+			@Override
+			public void run() {	
+				JLabelEstrella est = new JLabelEstrella();
+				int x = (int) (Math.random() * 1000 + 1);
+				int y = (int) (Math.random() * 750 + 1);
+				est.setBounds(x, y, JLabelEstrella.tamanyoEstrella, JLabelEstrella.tamanyoEstrella);
+				est.setHoraCreada(1200 * i);
+				estrellas.add(est);
+				
+				if (estrellas.size() > 2) {
+					for (int r = 0; r < estrellas.size(); r++) {
+						estrellas.get(r).setHoraCreada(estrellas.get(r).getHoraCreada() + 1200);
+					}
+				}
+				
+				panel.add(estrellas.get(j));
+				estrellas.get(j).repaint();
+				i++;
+				j++;
+				
+			}
+		};
+		creaEstrella.start();
+		
+	}
+	
+	/** Quita todas las estrellas que lleven en pantalla demasiado tiempo
+	* y rota 10 grados las que sigan estando
+	* @param maxTiempo Tiempo máximo para que se mantengan las estrellas (msegs)
+	* @return Número de estrellas quitadas */
+//	public int quitaYRotaEstrellas( long maxTiempo ) {	
+//		
+//		for (int q = 0; q < estrellas.size(); q++) {
+//			if () {
+//				panel.remove(estrellas.get(q));
+// 				estrellas.remove(q);
+//				estrellas.get(q);
+//				estrellas.get(j).setGiro(10);
+//				estrellas.get(j).repaint();
+//				estrellasQuitadas++;
+//			}
+//		}
+//		
+//		return estrellasQuitadas;
+//	}
+
 }

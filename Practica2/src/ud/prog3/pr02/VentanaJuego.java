@@ -201,6 +201,11 @@ public class VentanaJuego extends JFrame {
 				if(array[3] == true) 
 					miCoche.gira( -10 );
 				
+				
+				miMundo.crearEstrella();
+//				miMundo.quitaYRotaEstrellas(6000);
+				
+				
 				// Dormir el hilo 40 milisegundos
 				try {
 					Thread.sleep( 40 );
